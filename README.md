@@ -1,12 +1,9 @@
 analytics-ruby
 ==============
 
-analytics-ruby is a ruby client for [Segment](https://segment.com)
+Lessonly’s fork of Segment's `analyics-ruby` gem, modified for inserting data directly into our data warehouse instead of sending it to [Segment.com’s](https://segment.com/) API.
 
-<div align="center">
-  <img src="https://user-images.githubusercontent.com/16131737/53616965-fcdeb680-3b99-11e9-934c-53917ac1e563.png"/>
-  <p><b><i>You can't fix what you can't measure</i></b></p>
-</div>
+## Original README:
 
 Analytics helps you measure your users, product, and business. It unlocks insights into your app's funnel, core business metrics, and whether you have product-market fit.
 
