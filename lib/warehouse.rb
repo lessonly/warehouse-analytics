@@ -1,0 +1,1 @@
+require 'warehouse/analytics'

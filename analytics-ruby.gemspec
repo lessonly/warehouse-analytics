@@ -1,17 +1,17 @@
-require File.expand_path('../lib/segment/analytics/version', __FILE__)
+require File.expand_path('../lib/warehouse/analytics/version', __FILE__)
 
 Gem::Specification.new do |spec|
   spec.name = 'analytics-ruby'
-  spec.version = Segment::Analytics::VERSION
+  spec.version = Warehouse::Analytics::VERSION
   spec.files = Dir.glob("{lib,bin}/**/*")
   spec.require_paths = ['lib']
   spec.bindir = 'bin'
   spec.executables = ['analytics']
-  spec.summary = 'Segment.io analytics library'
-  spec.description = 'The Segment.io ruby analytics library'
-  spec.authors = ['Segment.io']
-  spec.email = 'friends@segment.io'
-  spec.homepage = 'https://github.com/segmentio/analytics-ruby'
+  spec.summary = 'Warehouse.io analytics library'
+  spec.description = 'The Warehouse.io ruby analytics library'
+  spec.authors = ['Warehouse.io']
+  spec.email = 'friends@warehouse.io'
+  spec.homepage = 'https://github.com/warehouseio/analytics-ruby'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 2.0'
 

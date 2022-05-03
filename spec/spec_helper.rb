@@ -1,10 +1,10 @@
-require 'segment/analytics'
+require 'warehouse/analytics'
 require 'active_support/time'
 
 # Setting timezone for ActiveSupport::TimeWithZone to UTC
 Time.zone = 'UTC'
 
-module Segment
+module Warehouse
   class Analytics
     WRITE_KEY = 'testsecret'
 

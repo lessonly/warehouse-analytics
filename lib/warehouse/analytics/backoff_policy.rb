@@ -1,9 +1,9 @@
-require 'segment/analytics/defaults'
+require 'warehouse/analytics/defaults'
 
-module Segment
+module Warehouse
   class Analytics
     class BackoffPolicy
-      include Segment::Analytics::Defaults::BackoffPolicy
+      include Warehouse::Analytics::Defaults::BackoffPolicy
 
       # @param [Hash] opts
       # @option opts [Numeric] :min_timeout_ms The minimum backoff timeout

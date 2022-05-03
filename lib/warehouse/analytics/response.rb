@@ -1,4 +1,4 @@
-module Segment
+module Warehouse
   class Analytics
     class Response
       attr_reader :status, :error

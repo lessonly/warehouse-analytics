@@ -1,8 +1,8 @@
-module Segment
+module Warehouse
   class Analytics
     module Defaults
       module Request
-        HOST = 'api.segment.io'
+        HOST = 'api.warehouse.io'
         PORT = 443
         PATH = '/v1/import'
         SSL = true

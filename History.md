@@ -1,19 +1,19 @@
 2.4.0 / 2021-05-05
 ==================
 
-* Enable overriding transport Pass options when initializing Transport (<https://github.com/segmentio/analytics-ruby/pull/230>)
+* Enable overriding transport Pass options when initializing Transport (<https://github.com/warehouseio/analytics-ruby/pull/230>)
 
 
 2.3.1 / 2021-04-13
 ==================
 
-  * Add test option for easier testing (https://github.com/segmentio/analytics-ruby/pull/222)
+  * Add test option for easier testing (https://github.com/warehouseio/analytics-ruby/pull/222)
 
 
 2.3.0 / 2021-03-26
 ==================
 
-  * [Improvement](https://github.com/segmentio/analytics-ruby/pull/225): Update timestamp for sub-millisecond reporting
+  * [Improvement](https://github.com/warehouseio/analytics-ruby/pull/225): Update timestamp for sub-millisecond reporting
   * Update supported Ruby versions (2.4, 2.5, 2.6, 2.7), remove unsupported Ruby versions (2.0, 2.1, 2.2, 2.3)
 
 2.2.8 / 2020-02-10
@@ -24,40 +24,40 @@
 2.2.8.pre / 2019-11-29
 ==================
 
-  * [Fix](https://github.com/segmentio/analytics-ruby/pull/212): Fix log message
+  * [Fix](https://github.com/warehouseio/analytics-ruby/pull/212): Fix log message
     for stubbed requests
-  * [Deprecate](https://github.com/segmentio/analytics-ruby/pull/209): Deprecate
+  * [Deprecate](https://github.com/warehouseio/analytics-ruby/pull/209): Deprecate
     Ruby <2.0 support
 
 2.2.7 / 2019-05-09
 ==================
 
-  * [Fix](https://github.com/segmentio/analytics-ruby/pull/188): Allow `anonymous_id`
+  * [Fix](https://github.com/warehouseio/analytics-ruby/pull/188): Allow `anonymous_id`
     in `#alias` and `#group`.
 
 2.2.6 / 2018-06-11
 ==================
 
   * Promote pre-release version to stable.
-  * [Fix](https://github.com/segmentio/analytics-ruby/pull/187): Don't assume
+  * [Fix](https://github.com/warehouseio/analytics-ruby/pull/187): Don't assume
     all errors are 'ConnectionError's
 
 2.2.6.pre / 2018-06-27
 ==================
 
-  * [Fix](https://github.com/segmentio/analytics-ruby/pull/168): Revert 'reuse
+  * [Fix](https://github.com/warehouseio/analytics-ruby/pull/168): Revert 'reuse
     TCP connections' to fix EMFILE errors
-  * [Fix](https://github.com/segmentio/analytics-ruby/pull/166): Fix oj/rails
+  * [Fix](https://github.com/warehouseio/analytics-ruby/pull/166): Fix oj/rails
     conflict
-  * [Fix](https://github.com/segmentio/analytics-ruby/pull/162): Add missing
+  * [Fix](https://github.com/warehouseio/analytics-ruby/pull/162): Add missing
     'Forwardable' requirement
-  * [Improvement](https://github.com/segmentio/analytics-ruby/pull/163): Better
+  * [Improvement](https://github.com/warehouseio/analytics-ruby/pull/163): Better
     logging
 
 2.2.5 / 2018-05-01
 ==================
 
-  * [Fix](https://github.com/segmentio/analytics-ruby/pull/158): Require `version` module first.
+  * [Fix](https://github.com/warehouseio/analytics-ruby/pull/158): Require `version` module first.
 
 2.2.4 / 2018-04-30
 ==================
@@ -67,24 +67,24 @@
 2.2.4.pre / 2018-02-04
 ======================
 
-  * [Fix](https://github.com/segmentio/analytics-ruby/pull/147): Prevent 'batch
+  * [Fix](https://github.com/warehouseio/analytics-ruby/pull/147): Prevent 'batch
     size exceeded' errors by automatically batching
     items according to size
-  * [Performance](https://github.com/segmentio/analytics-ruby/pull/149): Reuse
+  * [Performance](https://github.com/warehouseio/analytics-ruby/pull/149): Reuse
     TCP connections
-  * [Improvement](https://github.com/segmentio/analytics-ruby/pull/145): Emit logs
+  * [Improvement](https://github.com/warehouseio/analytics-ruby/pull/145): Emit logs
     when in-memory queue is full
-  * [Improvement](https://github.com/segmentio/analytics-ruby/pull/143): Emit logs
+  * [Improvement](https://github.com/warehouseio/analytics-ruby/pull/143): Emit logs
     when messages exceed maximum allowed size
-  * [Improvement](https://github.com/segmentio/analytics-ruby/pull/134): Add
+  * [Improvement](https://github.com/warehouseio/analytics-ruby/pull/134): Add
     exponential backoff to retries
-  * [Improvement](https://github.com/segmentio/analytics-ruby/pull/132): Handle
+  * [Improvement](https://github.com/warehouseio/analytics-ruby/pull/132): Handle
     HTTP status code failure appropriately
 
 2.2.3.pre / 2017-09-14
 ==================
 
-  * [Fix](https://github.com/segmentio/analytics-ruby/pull/120): Override `respond_to_missing` instead of `respond_to?` to facilitate mock the library in tests.
+  * [Fix](https://github.com/warehouseio/analytics-ruby/pull/120): Override `respond_to_missing` instead of `respond_to?` to facilitate mock the library in tests.
 
 
 2.2.2 / 2016-08-03
@@ -168,14 +168,14 @@
 
 2.0.1 / 2014-05-15
 ==================
-* add: namespace under Segment::Analytics
+* add: namespace under Warehouse::Analytics
 * add: can create multiple instances with creator method (rather than
     having a singleton)
 * add: logging with Logger instance or Rails.logger if available
 * add: able to stub requests so they just log and don't hit the server
 * fix: worker continues running across forked processes
 * fix: removed usage of ActiveSupport methods since its not a dependency
-* fix: sending data that matches segment's new api spec
+* fix: sending data that matches warehouse's new api spec
 
 (there is no v2.0.0)
 
@@ -210,7 +210,7 @@
 
 0.5.0 / 2013-10-03
 ==================
-* Removing global Analytics constant in favor of adding it to our config. NOTE: If you are upgrading from a previous version and want to continue using the `Analytics` namespace, you'll have to add `Analytics = AnalyticsRuby` to your config. Otherwise you WILL NOT be sending analytics data. See the [setup docs for more info](https://segment.io/libraries/ruby)
+* Removing global Analytics constant in favor of adding it to our config. NOTE: If you are upgrading from a previous version and want to continue using the `Analytics` namespace, you'll have to add `Analytics = AnalyticsRuby` to your config. Otherwise you WILL NOT be sending analytics data. See the [setup docs for more info](https://warehouse.io/libraries/ruby)
 
 0.4.0 / 2013-08-30
 ==================
@@ -260,7 +260,7 @@
 
 0.1.0 / 2013-01-22
 ==================
-* Updated docs to point at segment.io
+* Updated docs to point at warehouse.io
 
 0.0.5 / 2013-01-21
 ==================

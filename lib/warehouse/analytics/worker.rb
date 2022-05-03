@@ -1,19 +1,19 @@
-require 'segment/analytics/defaults'
-require 'segment/analytics/message_batch'
-require 'segment/analytics/transport'
-require 'segment/analytics/utils'
+require 'warehouse/analytics/defaults'
+require 'warehouse/analytics/message_batch'
+require 'warehouse/analytics/transport'
+require 'warehouse/analytics/utils'
 
-module Segment
+module Warehouse
   class Analytics
     class Worker
-      include Segment::Analytics::Utils
-      include Segment::Analytics::Defaults
-      include Segment::Analytics::Logging
+      include Warehouse::Analytics::Utils
+      include Warehouse::Analytics::Defaults
+      include Warehouse::Analytics::Logging
 
       # public: Creates a new worker
       #
       # The worker continuously takes messages off the queue
-      # and makes requests to the segment.io api
+      # and makes requests to the warehouse.io api
       #
       # queue   - Queue synchronized between client and worker
       # write_key  - String of the project's Write key
