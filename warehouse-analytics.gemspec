@@ -1,17 +1,17 @@
 require File.expand_path('../lib/warehouse/analytics/version', __FILE__)
 
 Gem::Specification.new do |spec|
-  spec.name = 'analytics-ruby'
+  spec.name = 'warehouse-analytics'
   spec.version = Warehouse::Analytics::VERSION
   spec.files = Dir.glob("{lib,bin}/**/*")
   spec.require_paths = ['lib']
   spec.bindir = 'bin'
   spec.executables = ['analytics']
-  spec.summary = 'Warehouse.io analytics library'
-  spec.description = 'The Warehouse.io ruby analytics library'
-  spec.authors = ['Warehouse.io']
-  spec.email = 'friends@warehouse.io'
-  spec.homepage = 'https://github.com/warehouseio/analytics-ruby'
+  spec.summary = 'Warehouse analytics library'
+  spec.description = 'Warehouse analytics library'
+  spec.authors = ['Lessonly']
+  spec.email = 'github@lessonly.com'
+  spec.homepage = 'https://github.com/lessonly/warehouse-analytics'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 2.0'
 

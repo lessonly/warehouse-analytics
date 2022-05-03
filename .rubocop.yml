@@ -37,7 +37,7 @@ Metrics/PerceivedComplexity:
 
 Naming/FileName:
   Exclude:
-    - lib/analytics-ruby.rb # Gem name, added for easier Gemfile usage
+    - lib/warehouse-analytics.rb # Gem name, added for easier Gemfile usage
 
 Naming/PredicateName:
   NameWhitelist:
