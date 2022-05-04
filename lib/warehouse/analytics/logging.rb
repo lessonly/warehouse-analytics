@@ -38,7 +38,7 @@ module Warehouse
                           logger.progname = 'Warehouse::Analytics'
                           logger
                         end
-          @logger = PrefixedLogger.new(base_logger, '[analytics-ruby]')
+          @logger = PrefixedLogger.new(base_logger, '[warehouse-analytics]')
         end
 
         attr_writer :logger
