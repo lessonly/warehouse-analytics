@@ -6,8 +6,6 @@ Time.zone = 'UTC'
 
 module Warehouse
   class Analytics
-    WRITE_KEY = 'testsecret'
-
     TRACK = {
       :event => 'Ruby Library test event',
       :properties => {

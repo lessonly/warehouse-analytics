@@ -4,7 +4,7 @@ module Warehouse
   class Analytics
     describe Client do
       let(:client) do
-        Client.new(:write_key => WRITE_KEY).tap { |client|
+        Client.new().tap { |client|
           # Ensure that worker doesn't consume items from the queue
           client.instance_variable_set(:@worker, NoopWorker.new)
         }
@@ -12,19 +12,9 @@ module Warehouse
       let(:queue) { client.instance_variable_get :@queue }
 
       describe '#initialize' do
-        it 'errors if no write_key is supplied' do
-          expect { Client.new }.to raise_error(ArgumentError)
-        end
-
-        it 'does not error if a write_key is supplied' do
+        it 'does not raise error' do
           expect do
-            Client.new :write_key => WRITE_KEY
-          end.to_not raise_error
-        end
-
-        it 'does not error if a write_key is supplied as a string' do
-          expect do
-            Client.new 'write_key' => WRITE_KEY
+            Client.new
           end.to_not raise_error
         end
       end
@@ -251,7 +241,7 @@ module Warehouse
 
       describe '#flush' do
         let(:client_with_worker) {
-          Client.new(:write_key => WRITE_KEY).tap { |client|
+          Client.new().tap { |client|
             queue = client.instance_variable_get(:@queue)
             client.instance_variable_set(:@worker, DummyWorker.new(queue))
           }

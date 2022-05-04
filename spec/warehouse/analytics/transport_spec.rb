@@ -105,7 +105,6 @@ module Warehouse
         let(:http_version) { 1.1 }
         let(:status_code) { 200 }
         let(:response_body) { {}.to_json }
-        let(:write_key) { 'abcdefg' }
         let(:batch) { [] }
 
         before do
@@ -126,14 +125,14 @@ module Warehouse
             path, default_headers
           ).and_call_original
 
-          subject.send(write_key, batch)
+          subject.send(batch)
         end
 
         it 'adds basic auth to the Net::HTTP::Post' do
           expect_any_instance_of(Net::HTTP::Post).to receive(:basic_auth)
-            .with(write_key, nil)
+            .with('temp username;to be deleted later', nil)
 
-          subject.send(write_key, batch)
+          subject.send(batch)
         end
 
         context 'with a stub' do
@@ -142,16 +141,16 @@ module Warehouse
           end
 
           it 'returns a 200 response' do
-            expect(subject.send(write_key, batch).status).to eq(200)
+            expect(subject.send(batch).status).to eq(200)
           end
 
           it 'has a nil error' do
-            expect(subject.send(write_key, batch).error).to be_nil
+            expect(subject.send(batch).error).to be_nil
           end
 
           it 'logs a debug statement' do
             expect(subject.logger).to receive(:debug).with(/stubbed request to/)
-            subject.send(write_key, batch)
+            subject.send(batch)
           end
         end
 
@@ -172,7 +171,7 @@ module Warehouse
                 .exactly(retries - 1).times
                 .with(1)
                 .and_return(nil)
-              subject.send(write_key, batch)
+              subject.send(batch)
             end
           end
 
@@ -187,18 +186,18 @@ module Warehouse
               expect(subject)
                 .to receive(:sleep)
                 .never
-              subject.send(write_key, batch)
+              subject.send(batch)
             end
           end
 
           context 'request is successful' do
             let(:status_code) { 201 }
             it 'returns a response code' do
-              expect(subject.send(write_key, batch).status).to eq(status_code)
+              expect(subject.send(batch).status).to eq(status_code)
             end
 
             it 'returns a nil error' do
-              expect(subject.send(write_key, batch).error).to be_nil
+              expect(subject.send(batch).error).to be_nil
             end
           end
 
@@ -207,7 +206,7 @@ module Warehouse
             let(:response_body) { { error: error }.to_json }
 
             it 'returns the parsed error' do
-              expect(subject.send(write_key, batch).error).to eq(error)
+              expect(subject.send(batch).error).to eq(error)
             end
           end
 
@@ -228,11 +227,11 @@ module Warehouse
             subject { described_class.new(retries: 0) }
 
             it 'returns a -1 for status' do
-              expect(subject.send(write_key, batch).status).to eq(-1)
+              expect(subject.send(batch).status).to eq(-1)
             end
 
             it 'has a connection error' do
-              error = subject.send(write_key, batch).error
+              error = subject.send(batch).error
               expect(error).to match(/Malformed JSON/)
             end
 

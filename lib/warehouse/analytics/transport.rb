@@ -35,11 +35,11 @@ module Warehouse
       # Sends a batch of messages to the API
       #
       # @return [Response] API response
-      def send(write_key, batch)
+      def send(batch)
         logger.debug("Sending request for #{batch.length} items")
 
         last_response, exception = retry_with_backoff(@retries) do
-          status_code, body = send_request(write_key, batch)
+          status_code, body = send_request(batch)
           error = JSON.parse(body)['error']
           should_retry = should_retry_request?(status_code, body)
           logger.debug("Response status code: #{status_code}")
@@ -106,17 +106,17 @@ module Warehouse
       end
 
       # Sends a request for the batch, returns [status_code, body]
-      def send_request(write_key, batch)
+      def send_request(batch)
         payload = JSON.generate(
           :sentAt => datetime_in_iso8601(Time.now),
           :batch => batch
         )
         request = Net::HTTP::Post.new(@path, @headers)
-        request.basic_auth(write_key, nil)
+        request.basic_auth('temp username;to be deleted later', nil)
 
         if self.class.stub
           logger.debug "stubbed request to #{@path}: " \
-            "write key = #{write_key}, batch = #{JSON.generate(batch)}"
+            "batch = #{JSON.generate(batch)}"
 
           [200, '{}']
         else

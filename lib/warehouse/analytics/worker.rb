@@ -16,15 +16,13 @@ module Warehouse
       # and makes requests to the warehouse.io api
       #
       # queue   - Queue synchronized between client and worker
-      # write_key  - String of the project's Write key
       # options - Hash of worker options
       #           batch_size - Fixnum of how many items to send in a batch
       #           on_error   - Proc of what to do on an error
       #
-      def initialize(queue, write_key, options = {})
+      def initialize(queue, options = {})
         symbolize_keys! options
         @queue = queue
-        @write_key = write_key
         @on_error = options[:on_error] || proc { |status, error| }
         batch_size = options[:batch_size] || Defaults::MessageBatch::MAX_SIZE
         @batch = MessageBatch.new(batch_size)
@@ -42,7 +40,7 @@ module Warehouse
             consume_message_from_queue! until @batch.full? || @queue.empty?
           end
 
-          res = @transport.send @write_key, @batch
+          res = @transport.send @batch
           @on_error.call(res.status, res.error) unless res.status == 200
 
           @lock.synchronize { @batch.clear }

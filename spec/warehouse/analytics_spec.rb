@@ -3,7 +3,7 @@ require 'spec_helper'
 module Warehouse
   class Analytics
     describe Analytics do
-      let(:analytics) { Warehouse::Analytics.new :write_key => WRITE_KEY, :stub => true }
+      let(:analytics) { Warehouse::Analytics.new :stub => true }
 
       describe '#track' do
         it 'errors without an event' do
@@ -132,7 +132,7 @@ module Warehouse
 
       describe '#test_queue' do
         context 'when not in mode' do
-          let(:analytics) { Warehouse::Analytics.new :write_key => WRITE_KEY, :stub => true, :test => true }
+          let(:analytics) { Warehouse::Analytics.new :stub => true, :test => true }
 
           it 'returns TestQueue' do
             expect(analytics.test_queue).to be_a(TestQueue)
@@ -146,7 +146,7 @@ module Warehouse
         end
 
         context 'when not in test mode' do
-          let(:analytics) { Warehouse::Analytics.new :write_key => WRITE_KEY, :stub => true, :test => false }
+          let(:analytics) { Warehouse::Analytics.new :stub => true, :test => false }
 
           it 'errors when not in test mode' do
             expect(analytics.instance_variable_get(:@test)).to be_falsey

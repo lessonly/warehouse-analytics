@@ -16,14 +16,13 @@ def json_hash(str)
   end
 end
 
-# analytics -method=<method> -warehouse-write-key=<warehouseWriteKey> [options]
+# analytics -method=<method> [options]
 
 default_command :send
 
 command :send do |c|
   c.description = 'send a warehouse message'
 
-  c.option '--writeKey=<writeKey>', String, 'the Warehouse writeKey'
   c.option '--type=<type>', String, 'The Warehouse message type'
 
   c.option '--userId=<userId>', String, 'the user id to send the event as'
@@ -43,7 +42,6 @@ command :send do |c|
 
   c.action do |args, options|
     Analytics = Warehouse::Analytics.new({
-      write_key: options.writeKey,
       on_error: Proc.new { |status, msg| print msg }
     })
 

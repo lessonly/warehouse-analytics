@@ -13,7 +13,6 @@ module Warehouse
       include Warehouse::Analytics::Logging
 
       # @param [Hash] opts
-      # @option opts [String] :write_key Your project's write_key
       # @option opts [FixNum] :max_queue_size Maximum number of calls to be
       #   remain queued.
       # @option opts [Proc] :on_error Handles error calls from the API.
@@ -22,13 +21,10 @@ module Warehouse
 
         @queue = Queue.new
         @test = opts[:test]
-        @write_key = opts[:write_key]
         @max_queue_size = opts[:max_queue_size] || Defaults::Queue::MAX_SIZE
         @worker_mutex = Mutex.new
-        @worker = Worker.new(@queue, @write_key, opts)
+        @worker = Worker.new(@queue, opts)
         @worker_thread = nil
-
-        check_write_key!
 
         at_exit { @worker_thread && @worker_thread[:should_exit] = true }
       end
@@ -177,11 +173,6 @@ module Warehouse
           )
           false
         end
-      end
-
-      # private: Checks that the write_key is properly initialized
-      def check_write_key!
-        raise ArgumentError, 'Write key must be initialized' if @write_key.nil?
       end
 
       def ensure_worker_running
