@@ -171,7 +171,7 @@ module Warehouse
         end
 
         def add_context!(context)
-          context[:library] = { :name => 'analytics-ruby', :version => Warehouse::Analytics::VERSION.to_s }
+          context[:library] = { :name => 'warehouse-analytics', :version => Warehouse::Analytics::VERSION.to_s }
         end
 
         # private: Ensures that a string is non-empty

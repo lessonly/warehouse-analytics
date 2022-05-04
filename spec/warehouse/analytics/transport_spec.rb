@@ -120,7 +120,7 @@ module Warehouse
           default_headers = {
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
-            'User-Agent' => "analytics-ruby/#{Analytics::VERSION}"
+            'User-Agent' => "warehouse-analytics/#{Analytics::VERSION}"
           }
           expect(Net::HTTP::Post).to receive(:new).with(
             path, default_headers

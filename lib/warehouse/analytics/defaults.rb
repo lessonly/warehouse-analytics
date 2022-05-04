@@ -8,7 +8,7 @@ module Warehouse
         SSL = true
         HEADERS = { 'Accept' => 'application/json',
                     'Content-Type' => 'application/json',
-                    'User-Agent' => "analytics-ruby/#{Analytics::VERSION}" }
+                    'User-Agent' => "warehouse-analytics/#{Analytics::VERSION}" }
         RETRIES = 10
       end
 
