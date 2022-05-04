@@ -1,11 +1,11 @@
 warehouse-analytics
 ==============
 
-Lessonly’s fork of Segment's [`warehouse-analytics` gem](https://github.com/segmentio/warehouse-analytics), modified for inserting data directly into our data warehouse instead of sending it to [Segment.com’s](https://segment.com/) API.
+Lessonly’s fork of Segment's [`analytics-ruby` gem](https://github.com/segmentio/analytics-ruby), modified for inserting data directly into our data warehouse instead of sending it to [Segment.com’s](https://segment.com/) API.
 ## Install
 
 ```ruby
-gem 'warehouse-analytics', git: 'https://github.com/lessonly/warehouse-analytics'
+gem "warehouse-analytics", github: "lessonly/warehouse-analytics"
 ```
 
 
