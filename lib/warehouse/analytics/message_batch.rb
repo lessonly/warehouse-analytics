@@ -19,7 +19,7 @@ module Warehouse
 
       def <<(message)
         begin
-          message_json = message.to_json
+          message_json = Warehouse::Analytics::Transformer.transform(message).to_json
         rescue StandardError => e
           raise JSONGenerationError, "Serialization error: #{e}"
         end
