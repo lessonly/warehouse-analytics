@@ -78,7 +78,8 @@ module Warehouse
           })
         end
 
-        it '“flattens” all context fields that contain a nested object (for example, context.field.nestedA.nestedB becomes a column called context_field_nestedA_nestedB)' do
+        it '“flattens” all context fields that contain a nested object' do
+          # (for example, context.field.nestedA.nestedB becomes a column called context_field_nestedA_nestedB)
           message = {
             context: {
               nested_object: {
