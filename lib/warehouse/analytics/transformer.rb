@@ -16,8 +16,8 @@ module Warehouse
       class << self
 
         def transform(message)
-          flattend_message = flatten(message)
-          prefix_reserved_words(flattend_message)
+          flattened_message = flatten(message)
+          prefix_reserved_words(flattened_message)
         end
 
         def flatten(message)
