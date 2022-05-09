@@ -5,7 +5,7 @@ module Warehouse
     describe Transformer do
       describe '#transform' do
         it 'empty returns empty' do
-          expect(Transformer.flatten({})).to eq({})
+          expect(Transformer.transform({})).to eq({})
         end
 
         it 'stringifies all properties that contain a nested array' do
@@ -47,7 +47,7 @@ module Warehouse
               shallow: "shallow"
             }
           }
-          expect(Transformer.flatten(message)).to eq({
+          expect(Transformer.transform(message)).to eq({
             nested_object_deeply_nested_object_deepest_nested_object_deepiest_nested_object_yes: "deepiest",
             nested_object_2_mild_depth: true,
             shallow: "shallow"
@@ -71,7 +71,7 @@ module Warehouse
               shallow: "shallow"
             }
           }
-          expect(Transformer.flatten(message)).to eq({
+          expect(Transformer.transform(message)).to eq({
             nested_object_deeply_nested_object_deepest_nested_object_deepiest_nested_object_yes: "deepiest",
             nested_object_2_mild_depth: true,
             shallow: "shallow"
@@ -98,7 +98,7 @@ module Warehouse
               }
             }
           }
-          expect(Transformer.flatten(message)).to eq({
+          expect(Transformer.transform(message)).to eq({
             context_nested_object_deeply_nested_object_deep: "deep",
             context_nested_object_2_mild_depth: true,
             context_shallow: "shallow",
