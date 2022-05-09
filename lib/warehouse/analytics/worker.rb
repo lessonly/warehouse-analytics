@@ -59,8 +59,6 @@ module Warehouse
 
       def consume_message_from_queue!
         @batch << @queue.pop
-      rescue MessageBatch::JSONGenerationError => e
-        @on_error.call(-1, e.to_s)
       end
     end
   end
