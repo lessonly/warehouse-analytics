@@ -115,7 +115,7 @@ module Warehouse
         request.basic_auth('temp username;to be deleted later', nil)
 
         if self.class.stub
-          logger.debug "stubbed request to #{@path}: " \
+          logger.warn "stubbed request to #{@path}: " \
             "batch = #{JSON.generate(batch)}"
 
           [200, '{}']

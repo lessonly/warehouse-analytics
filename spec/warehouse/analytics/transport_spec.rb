@@ -149,7 +149,7 @@ module Warehouse
           end
 
           it 'logs a debug statement' do
-            expect(subject.logger).to receive(:debug).with(/stubbed request to/)
+            expect(subject.logger).to receive(:warn).with(/stubbed request to/)
             subject.send(batch)
           end
         end
