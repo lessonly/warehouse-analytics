@@ -53,6 +53,7 @@ module Warehouse
             shallow: "shallow"
           })
         end
+
         it '“flattens” all traits that contain a nested object' do
           message = {
             traits: {
@@ -108,13 +109,55 @@ module Warehouse
           })
         end
 
+        it 'snake_cases event name with : and /' do
+          message = {
+            event: "Test:Event/GreatName"
+          }
+          expect(Transformer.transform(message)).to eq({
+            event_text: "Test:Event/GreatName",
+            event: "test_event_great_name"
+          })
+        end
+
+        it 'snake_cases event name with :: namespace and spaces' do
+          message = {
+            event: "Test::Event PascalCase"
+          }
+          expect(Transformer.transform(message)).to eq({
+            event_text: "Test::Event PascalCase",
+            event: "test_event_pascal_case"
+          })
+        end
+
+        it 'snake_cases all keys' do
+          message = {
+            properties: {
+              nestedObject: {
+                NotSnakeCase: "Please"
+              }
+            },
+            context: {
+              NotSnakeCase: "At all"
+            },
+            traits: {
+              camelCase: "oops"
+            }
+          }
+          expect(Transformer.transform(message)).to eq({
+            nested_object_not_snake_case: "Please",
+            context_not_snake_case: "At all",
+            camel_case: "oops"
+          })
+        end
+
         it 'prefixes reserved event and keys' do
           message = {
             event: Defaults::Redshift::RESERVED_WORDS[2],
             properties: Defaults::Redshift::RESERVED_WORDS.to_h { |k| [(rand 2) == 0 ? k.downcase : k.upcase, k] }
           }
           expect(Transformer.transform(message)).to eq({
-            event: "_#{Defaults::Redshift::RESERVED_WORDS[2]}",
+            event: "_#{Defaults::Redshift::RESERVED_WORDS[2].downcase}",
+            event_text: Defaults::Redshift::RESERVED_WORDS[2],
           }.merge(Defaults::Redshift::RESERVED_WORDS.to_h { |k| ["_#{k.downcase}", k] }))
         end
       end
