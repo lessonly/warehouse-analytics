@@ -150,6 +150,15 @@ module Warehouse
           })
         end
 
+        it 'ignores unexpected value data type' do
+          message = {
+            properties: {
+              unknown_type: RuntimeError.new("We don't handle error types!")
+            }
+          }
+          expect(Transformer.transform(message)).to eq({})
+        end
+
         it 'prefixes reserved event and keys' do
           message = {
             event: Defaults::Redshift::RESERVED_WORDS[2],

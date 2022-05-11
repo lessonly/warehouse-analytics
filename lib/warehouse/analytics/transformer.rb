@@ -1,3 +1,5 @@
+require 'warehouse/analytics/logging'
+
 module Warehouse
   class Analytics
     # Handles transforming fields according to the Warehouse Spec
@@ -14,6 +16,9 @@ module Warehouse
     #
     class Transformer
       class << self
+        include Warehouse::Analytics::Logging
+
+        VALID_VALUE_TYPES = [String, Numeric, TrueClass, FalseClass, Time, DateTime, Array, Hash]
 
         def transform(message)
           flattened_message = flatten(message)
@@ -55,6 +60,10 @@ module Warehouse
             .downcase                               # Convert all capital letters to lower case
         end
 
+        def valid_value_type?(value)
+          VALID_VALUE_TYPES.find { |valid_class| value.is_a? valid_class }
+        end
+
         def flatten_hash(hash, top_level)
           hash.each_with_object({}) do |(k, v), h|
             if v.is_a? Hash
@@ -64,8 +73,10 @@ module Warehouse
               end
             elsif v.is_a? Array
               h[k.to_sym] = "[#{v.join(',')}]"
-            else
+            elsif valid_value_type?(v)
               h[k.to_sym] = v
+            else
+              logger.warn "Unexpected Data Type (#{v.class}) in flatten_hash for key (#{k})"
             end
            end
         end
