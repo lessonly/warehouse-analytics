@@ -16,14 +16,16 @@ module Warehouse
       class << self
 
         def transform(message)
-          normalized_event = normalize(message)
-          flattened_message = flatten(normalized_event)
-          prefix_reserved_words(flattened_message)
+          flattened_message = flatten(message)
+          renamed_properties_message = rename_properties(flattened_message)
+          prefix_reserved_words(renamed_properties_message)
         end
 
-        def normalize(message)
+        def rename_properties(message)
           message[:event_text] = message[:event] if message[:event].present?
           message[:event] = snake_case(message[:event]) if message[:event].present?
+          message[:id] = message[:messageId] if message[:messageId].present?
+          message.delete(:messageId)
           message
         end
 
@@ -63,9 +65,9 @@ module Warehouse
                 h["#{key_prefix}#{snake_case(h_k)}".to_sym] = h_v
               end
             elsif v.is_a? Array
-              h[k] = "[#{v.join(',')}]"
+              h[k.to_sym] = "[#{v.join(',')}]"
             else
-              h[k] = v
+              h[k.to_sym] = v
             end
            end
         end
