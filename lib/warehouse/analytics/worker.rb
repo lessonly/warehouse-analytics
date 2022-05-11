@@ -41,12 +41,11 @@ module Warehouse
           end
 
           res = @transport.send @batch
-          @on_error.call(res.status, res.error) unless res.status == 200
+          # TODO: We'll need to figure out how to handle errors
+          # @on_error.call(res.status, res.error) unless res.status == 200
 
           @lock.synchronize { @batch.clear }
         end
-      ensure
-        @transport.shutdown
       end
 
       # public: Check whether we have outstanding requests.

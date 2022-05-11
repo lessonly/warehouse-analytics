@@ -6,7 +6,6 @@ require 'warehouse/analytics/client'
 require 'warehouse/analytics/worker'
 require 'warehouse/analytics/transformer'
 require 'warehouse/analytics/transport'
-require 'warehouse/analytics/response'
 require 'warehouse/analytics/logging'
 require 'warehouse/analytics/test_queue'
 

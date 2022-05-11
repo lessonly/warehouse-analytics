@@ -17,20 +17,12 @@ module Warehouse
       end
 
       describe '#run' do
-        before :all do
-          Warehouse::Analytics::Defaults::Request::BACKOFF = 0.1
-        end
-
-        after :all do
-          Warehouse::Analytics::Defaults::Request::BACKOFF = 30.0
-        end
-
         it 'does not error if the request fails' do
           expect do
             Warehouse::Analytics::Transport
               .any_instance
               .stub(:send)
-              .and_return(Warehouse::Analytics::Response.new(-1, 'Unknown error'))
+              .and_return(false)
 
             queue = Queue.new
             queue << {}
@@ -43,33 +35,36 @@ module Warehouse
           end.to_not raise_error
         end
 
-        it 'executes the error handler if the request is invalid' do
-          Warehouse::Analytics::Transport
-            .any_instance
-            .stub(:send)
-            .and_return(Warehouse::Analytics::Response.new(400, 'Some error'))
+        pending 'executes the error handler if the request is invalid' do
+          raise
+          # TODO: We have temporarily removed the error handler in worker.rb
+          # As soon as we re-implement that, we need to add some tests.
+          #
+          # Warehouse::Analytics::Transport
+          #   .any_instance
+          #   .stub(:send)
+          #   .and_return(false)
 
-          status = error = nil
-          on_error = proc do |yielded_status, yielded_error|
-            sleep 0.2 # Make this take longer than thread spin-up (below)
-            status, error = yielded_status, yielded_error
-          end
+          # status = error = nil
+          # on_error = proc do |yielded_status, yielded_error|
+          #   sleep 0.2 # Make this take longer than thread spin-up (below)
+          #   status, error = yielded_status, yielded_error
+          # end
 
-          queue = Queue.new
-          queue << {}
-          worker = described_class.new(queue, :on_error => on_error)
+          # queue = Queue.new
+          # queue << {}
+          # worker = described_class.new(queue, :on_error => on_error)
 
           # This is to ensure that Client#flush doesn't finish before calling
           # the error handler.
-          Thread.new { worker.run }
-          sleep 0.1 # First give thread time to spin-up.
-          sleep 0.01 while worker.is_requesting?
+          # Thread.new { worker.run }
+          # sleep 0.1 # First give thread time to spin-up.
+          # sleep 0.01 while worker.is_requesting?
 
-          Warehouse::Analytics::Transport.any_instance.unstub(:send)
+          # Warehouse::Analytics::Transport.any_instance.unstub(:send)
 
-          expect(queue).to be_empty
-          expect(status).to eq(400)
-          expect(error).to eq('Some error')
+          # expect(queue).to be_empty
+          # expect(error).to eq('Some error')
         end
 
         it 'does not call on_error if the request is good' do
@@ -101,7 +96,7 @@ module Warehouse
             .any_instance
             .stub(:send) {
               sleep(0.2)
-              Warehouse::Analytics::Response.new(200, 'Success')
+              true
             }
 
           queue = Queue.new
