@@ -9,16 +9,18 @@ module Warehouse
       include Warehouse::Analytics::Utils
       include Warehouse::Analytics::Logging
 
-      def initialize(options = {})
-        @retries = options[:retries] || RETRIES
-        @backoff_policy =
-          options[:backoff_policy] || Warehouse::Analytics::BackoffPolicy.new
-
-      end
+      def initialize(options = {}); end
 
       def send(batch)
         logger.debug("Sending request for #{batch.length} items")
 
+        batch.each do |message|
+          next unless message[:event_name] == 'on_demand_practice_learn_more_clicked'
+          message.slice!(Tracking::OnDemandPracticeLearnMoreClicked.column_names)
+          unless Tracking::OnDemandPracticeLearnMoreClicked.create(message)
+            logger.warn("Failed to insert warehouse event: #{message.inspect}")
+          end
+        end
       end
 
       class << self
