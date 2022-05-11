@@ -21,16 +21,15 @@ module Warehouse
         VALID_VALUE_TYPES = [String, Numeric, TrueClass, FalseClass, Time, DateTime, Array, Hash]
 
         def transform(message)
-          flattened_message = flatten(message)
+          flattened_message = flatten({ **message })
           renamed_properties_message = rename_properties(flattened_message)
           prefix_reserved_words(renamed_properties_message)
         end
 
         def rename_properties(message)
-          message[:event_text] = message[:event] if message[:event].present?
-          message[:event] = snake_case(message[:event]) if message[:event].present?
-          message[:id] = message[:messageId] if message[:messageId].present?
-          message.delete(:messageId)
+          message["event_text"] = message["event"] if message["event"].present?
+          message["event"] = snake_case(message["event"]) if message["event"].present?
+          message["id"] = message["messageId"] if message["messageId"].present?
           message
         end
 
@@ -39,7 +38,7 @@ module Warehouse
         end
 
         def prefix_reserved_words(message)
-          message[:event] = prefix_redshift_reserved_words(message[:event]) if message[:event].present?
+          message["event"] = prefix_redshift_reserved_words(message["event"]) if message["event"].present?
           message.transform_keys {|key| prefix_redshift_reserved_words(key) }
         end
 
@@ -69,12 +68,12 @@ module Warehouse
             if v.is_a? Hash
               key_prefix = ((top_level && k == :context) || !top_level) ? "#{k}_" : ""
               flatten_hash(v, false).map do |h_k, h_v|
-                h["#{key_prefix}#{snake_case(h_k)}".to_sym] = h_v
+                h["#{key_prefix}#{snake_case(h_k)}".to_s] = h_v
               end
             elsif v.is_a? Array
-              h[k.to_sym] = "[#{v.join(',')}]"
+              h[k.to_s] = "[#{v.join(',')}]"
             elsif valid_value_type?(v)
-              h[k.to_sym] = v
+              h[k.to_s] = v
             else
               logger.warn "Unexpected Data Type (#{v.class}) in flatten_hash for key (#{k})"
             end

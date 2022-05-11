@@ -12,21 +12,21 @@ module Warehouse
           message = { properties: { nested_array: ['Gang', 'is', 'all', 'here'] } }
           expect(Transformer.transform(message)).to eq({
             nested_array: '[Gang,is,all,here]'
-          })
+          }.stringify_keys)
         end
 
         it 'stringifies all context fields that contain a nested array' do
           message = { context: { roles: ['admin', 'manager'] } }
           expect(Transformer.transform(message)).to eq({
             context_roles: '[admin,manager]'
-          })
+          }.stringify_keys)
         end
 
         it 'stringifies all traits that contain a nested array' do
           message = { traits: { address: { street: '1129 E 16th St, Indianapolis, IN 46202'} } }
           expect(Transformer.transform(message)).to eq({
             address_street: '1129 E 16th St, Indianapolis, IN 46202'
-          })
+          }.stringify_keys)
         end
 
         it '“flattens” all properties that contain a nested object' do
@@ -51,7 +51,7 @@ module Warehouse
             nested_object_deeply_nested_object_deepest_nested_object_deepiest_nested_object_yes: "deepiest",
             nested_object_2_mild_depth: true,
             shallow: "shallow"
-          })
+          }.stringify_keys)
         end
 
         it '“flattens” all traits that contain a nested object' do
@@ -76,7 +76,7 @@ module Warehouse
             nested_object_deeply_nested_object_deepest_nested_object_deepiest_nested_object_yes: "deepiest",
             nested_object_2_mild_depth: true,
             shallow: "shallow"
-          })
+          }.stringify_keys)
         end
 
         it '“flattens” all context fields that contain a nested object' do
@@ -106,7 +106,7 @@ module Warehouse
             context_another_object_field_1: 'this is field 1',
             context_another_object_field_2: 'this is field 2',
             context_another_object_field_3: 'this is field 3'
-          })
+          }.stringify_keys)
         end
 
         it 'snake_cases event name with : and /' do
@@ -116,7 +116,7 @@ module Warehouse
           expect(Transformer.transform(message)).to eq({
             event_text: "Test:Event/GreatName",
             event: "test_event_great_name"
-          })
+          }.stringify_keys)
         end
 
         it 'snake_cases event name with :: namespace and spaces' do
@@ -126,7 +126,7 @@ module Warehouse
           expect(Transformer.transform(message)).to eq({
             event_text: "Test::Event PascalCase",
             event: "test_event_pascal_case"
-          })
+          }.stringify_keys)
         end
 
         it 'snake_cases all keys' do
@@ -147,7 +147,7 @@ module Warehouse
             nested_object_not_snake_case: "Please",
             context_not_snake_case: "At all",
             camel_case: "oops"
-          })
+          }.stringify_keys)
         end
 
         it 'ignores unexpected value data type' do
@@ -167,18 +167,18 @@ module Warehouse
           expect(Transformer.transform(message)).to eq({
             event: "_#{Defaults::Redshift::RESERVED_WORDS[2].downcase}",
             event_text: Defaults::Redshift::RESERVED_WORDS[2],
-          }.merge(Defaults::Redshift::RESERVED_WORDS.to_h { |k| ["_#{k.downcase}", k] }))
+          }.merge(Defaults::Redshift::RESERVED_WORDS.to_h { |k| ["_#{k.downcase}", k] }).stringify_keys)
         end
       end
 
       describe '#prefix_reserved_words' do
         it 'prefixes all redshift reserved words' do
           message = {
-            event: Defaults::Redshift::RESERVED_WORDS[2],
+            "event" => Defaults::Redshift::RESERVED_WORDS[2],
           }.merge(Defaults::Redshift::RESERVED_WORDS.to_h { |k| [k, k] })
 
           expect(Transformer.prefix_reserved_words(message)).to eq({
-            event: "_#{Defaults::Redshift::RESERVED_WORDS[2]}",
+            "event" => "_#{Defaults::Redshift::RESERVED_WORDS[2]}"
           }.merge(Defaults::Redshift::RESERVED_WORDS.to_h { |k| ["_#{k}", k] }))
         end
       end
