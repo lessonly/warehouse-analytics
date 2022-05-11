@@ -48,9 +48,7 @@ module Warehouse
           # Based on underscore from rails active support
           # https://github.com/wycats/rails-api/blob/4aa40d1381fac5bc69bae6bb8e24dfb421997b40/vendor/rails/activesupport/lib/active_support/inflector/methods.rb#L38
           word.to_s
-            .gsub(/::/, '_')                        # Convert :: Namespace Colons to _
-            .gsub(/:/, '_')                         # Convert single : colon to _
-            .gsub(/\//, '_')                        # Convert forward slash / to _
+            .gsub(/::|:|\//, '_')                   # Convert all ::, :, / to _
             .gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2')   # Insert _ between capital letter preceding lower case letter (ignores the start of the word)
             .gsub(/([a-z])([A-Z])/,'\1_\2')         # Insert _ between lower case letter preceding a capital letter
             .tr("- ", "_")                          # Convert hyphens - and spaces to underscore
