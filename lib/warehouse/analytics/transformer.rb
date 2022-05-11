@@ -21,9 +21,10 @@ module Warehouse
         VALID_VALUE_TYPES = [String, Numeric, TrueClass, FalseClass, Time, DateTime, Array, Hash]
 
         def transform(message)
-          flattened_message = flatten({ **message })
-          renamed_properties_message = rename_properties(flattened_message)
-          prefix_reserved_words(renamed_properties_message)
+          transformed_message = { **message }
+          transformed_message = flatten_and_transform_hash(transformed_message, true)
+          transformed_message = rename_properties(transformed_message)
+          prefix_reserved_words(transformed_message)
         end
 
         def rename_properties(message)
@@ -31,10 +32,6 @@ module Warehouse
           message["event"] = snake_case(message["event"]) if message["event"].present?
           message["id"] = message["messageId"] if message["messageId"].present?
           message
-        end
-
-        def flatten(message)
-          flatten_hash(message, true)
         end
 
         def prefix_reserved_words(message)
@@ -45,7 +42,7 @@ module Warehouse
         private
 
         def prefix_redshift_reserved_words(word)
-          Defaults::Redshift::RESERVED_WORDS.find { |e| /#{word}/i =~ e }.present? ? "_#{word}" : word
+          Defaults::Redshift::RESERVED_WORDS[word.upcase] ? "_#{word}" : word
         end
 
         def snake_case(word)
@@ -63,19 +60,19 @@ module Warehouse
           VALID_VALUE_TYPES.find { |valid_class| value.is_a? valid_class }
         end
 
-        def flatten_hash(hash, top_level)
+        def flatten_and_transform_hash(hash, top_level)
           hash.each_with_object({}) do |(k, v), h|
             if v.is_a? Hash
               key_prefix = ((top_level && k == :context) || !top_level) ? "#{k}_" : ""
-              flatten_hash(v, false).map do |h_k, h_v|
+              flatten_and_transform_hash(v, false).map do |h_k, h_v|
                 h["#{key_prefix}#{snake_case(h_k)}".to_s] = h_v
               end
             elsif v.is_a? Array
-              h[k.to_s] = "[#{v.join(',')}]"
+              h[snake_case(k)] = "[#{v.join(',')}]"
             elsif valid_value_type?(v)
-              h[k.to_s] = v
+              h[snake_case(k)] = v
             else
-              logger.warn "Unexpected Data Type (#{v.class}) in flatten_hash for key (#{k})"
+              logger.warn "Unexpected Data Type (#{v.class}) in flatten_and_transform_hash for key (#{k})"
             end
            end
         end

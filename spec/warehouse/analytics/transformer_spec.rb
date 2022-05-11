@@ -161,25 +161,25 @@ module Warehouse
 
         it 'prefixes reserved event and keys' do
           message = {
-            event: Defaults::Redshift::RESERVED_WORDS[2],
-            properties: Defaults::Redshift::RESERVED_WORDS.to_h { |k| [(rand 2) == 0 ? k.downcase : k.upcase, k] }
+            event: "ALL",
+            properties: Defaults::Redshift::RESERVED_WORDS.to_h { |k| [(rand 2) == 0 ? k.downcase : k.upcase, true] }
           }
           expect(Transformer.transform(message)).to eq({
-            event: "_#{Defaults::Redshift::RESERVED_WORDS[2].downcase}",
-            event_text: Defaults::Redshift::RESERVED_WORDS[2],
-          }.merge(Defaults::Redshift::RESERVED_WORDS.to_h { |k| ["_#{k.downcase}", k] }).stringify_keys)
+            event: "_all",
+            event_text: "ALL",
+          }.merge(Defaults::Redshift::RESERVED_WORDS.transform_keys { |k| "_#{k.downcase}" }).stringify_keys)
         end
       end
 
       describe '#prefix_reserved_words' do
         it 'prefixes all redshift reserved words' do
           message = {
-            "event" => Defaults::Redshift::RESERVED_WORDS[2],
-          }.merge(Defaults::Redshift::RESERVED_WORDS.to_h { |k| [k, k] })
+            "event" => "ALL",
+          }.merge(Defaults::Redshift::RESERVED_WORDS.to_h { |k| [k, true] })
 
           expect(Transformer.prefix_reserved_words(message)).to eq({
-            "event" => "_#{Defaults::Redshift::RESERVED_WORDS[2]}"
-          }.merge(Defaults::Redshift::RESERVED_WORDS.to_h { |k| ["_#{k}", k] }))
+            "event" => "_ALL"
+          }.merge(Defaults::Redshift::RESERVED_WORDS.transform_keys { |k| "_#{k}" }))
         end
       end
 
