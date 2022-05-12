@@ -18,7 +18,7 @@ module Warehouse
       class << self
         include Warehouse::Analytics::Logging
 
-        VALID_VALUE_TYPES = [String, Numeric, TrueClass, FalseClass, Time, DateTime, Array, Hash]
+        VALID_VALUE_TYPES = [String, Numeric, TrueClass, FalseClass, Time, DateTime, Array, Hash, Symbol]
 
         def transform(message)
           transformed_message = { **message }
