@@ -15,8 +15,8 @@ module Warehouse
         logger.debug("Sending request for #{batch.length} items")
 
         batch.each do |message|
-          next unless message[:event_name] == 'on_demand_practice_learn_more_clicked'
-          message.slice!(Tracking::OnDemandPracticeLearnMoreClicked.column_names)
+          next unless message[:event] == 'on_demand_practice_learn_more_clicked'
+          message.slice!(*Tracking::OnDemandPracticeLearnMoreClicked.column_names)
           unless Tracking::OnDemandPracticeLearnMoreClicked.create(message)
             logger.warn("Failed to insert warehouse event: #{message.inspect}")
           end

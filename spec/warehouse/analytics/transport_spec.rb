@@ -27,7 +27,22 @@ module Warehouse
         end
 
         context 'a real request' do
-          # TODO: Write some tests
+          it 'successfully saves a record to the database for Tracking::OnDemandPracticeLearnMoreClicked events' do
+            batch = [{ event: 'on_demand_practice_learn_more_clicked', not_a_column: "I'm not a column!" }]
+
+            expect(subject.logger).to receive(:debug)
+            expect(subject.logger).not_to receive(:warn)
+            expect(Tracking::OnDemandPracticeLearnMoreClicked).to receive(:create).with({ event: 'on_demand_practice_learn_more_clicked' }).and_call_original
+            subject.send(batch)
+          end
+
+          it 'does not save a record to the database for any other event' do
+            batch = [{ event: 'test_event' }]
+
+            expect(subject.logger).to receive(:debug)
+            expect(Tracking::OnDemandPracticeLearnMoreClicked).to_not receive(:create)
+            subject.send(batch)
+          end
         end
       end
     end
