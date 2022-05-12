@@ -32,7 +32,7 @@ module Warehouse
 
             expect(subject.logger).to receive(:debug)
             expect(subject.logger).not_to receive(:warn)
-            expect(Tracking::OnDemandPracticeLearnMoreClicked).to receive(:create).with({ 'event' => 'on_demand_practice_learn_more_clicked' }).and_call_original
+            expect(Tracking::OnDemandPracticeLearnMoreClicked).to receive(:create).with({ 'event' => 'on_demand_practice_learn_more_clicked' }).and_return(double(persisted?: true))
             subject.send(batch)
           end
 

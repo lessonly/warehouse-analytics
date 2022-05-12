@@ -40,8 +40,7 @@ module Warehouse
             consume_message_from_queue! until @batch.full? || @queue.empty?
           end
 
-          responses = @transport.send @batch
-          @on_error.call(nil, 'Failed to insert a warehouse event') if responses.include?(false)
+          @transport.send @batch
 
           @lock.synchronize { @batch.clear }
         end

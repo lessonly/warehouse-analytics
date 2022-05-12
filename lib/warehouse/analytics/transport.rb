@@ -14,20 +14,13 @@ module Warehouse
       def send(batch)
         logger.debug("Sending request for #{batch.length} items")
 
-        responses = [true]
-
         batch.each do |message|
           next unless message['event'] == 'on_demand_practice_learn_more_clicked'
           message.slice!(*Tracking::OnDemandPracticeLearnMoreClicked.column_names)
-          response = Tracking::OnDemandPracticeLearnMoreClicked.create(message)
-          unless response
+          unless Tracking::OnDemandPracticeLearnMoreClicked.create(message).persisted?
             logger.warn("Failed to insert warehouse event: #{message.inspect}")
           end
-
-          responses << response
         end
-
-        responses
       end
 
       class << self

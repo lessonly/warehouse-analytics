@@ -109,8 +109,8 @@ end
 
 module Tracking
   class OnDemandPracticeLearnMoreClicked
-    def self.create(_message)
-      true
+    def self.create(message)
+      message
     end
 
     def self.column_names
