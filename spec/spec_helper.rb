@@ -114,7 +114,7 @@ module Tracking
     end
 
     def self.column_names
-      [:event]
+      ['event']
     end
   end
 end
