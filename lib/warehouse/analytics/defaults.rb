@@ -1,17 +1,6 @@
 module Warehouse
   class Analytics
     module Defaults
-      module Request
-        HOST = 'api.warehouse.io'
-        PORT = 443
-        PATH = '/v1/import'
-        SSL = true
-        HEADERS = { 'Accept' => 'application/json',
-                    'Content-Type' => 'application/json',
-                    'User-Agent' => "warehouse-analytics/#{Analytics::VERSION}" }
-        RETRIES = 10
-      end
-
       module Queue
         MAX_SIZE = 10000
       end

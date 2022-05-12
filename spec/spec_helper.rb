@@ -107,6 +107,18 @@ class FakeBackoffPolicy
   end
 end
 
+module Tracking
+  class OnDemandPracticeLearnMoreClicked
+    def self.create(message)
+      message
+    end
+
+    def self.column_names
+      ['event']
+    end
+  end
+end
+
 # usage:
 # it "should return a result of 5" do
 #   eventually(options: {timeout: 1}) { long_running_thing.result.should eq(5) }

@@ -40,13 +40,10 @@ module Warehouse
             consume_message_from_queue! until @batch.full? || @queue.empty?
           end
 
-          res = @transport.send @batch
-          @on_error.call(res.status, res.error) unless res.status == 200
+          @transport.send @batch
 
           @lock.synchronize { @batch.clear }
         end
-      ensure
-        @transport.shutdown
       end
 
       # public: Check whether we have outstanding requests.

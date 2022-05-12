@@ -28,6 +28,7 @@ module Warehouse
 
       def_delegators :@messages, :empty?
       def_delegators :@messages, :length
+      def_delegators :@messages, :each
 
       private
 
