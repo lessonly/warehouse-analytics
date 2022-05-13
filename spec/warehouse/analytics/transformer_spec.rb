@@ -109,12 +109,12 @@ module Warehouse
           }.stringify_keys)
         end
 
-        it 'snake_cases event name with : and /' do
+        it 'snake_cases event name with a space, :, and /' do
           message = {
-            event: "Test:Event/GreatName"
+            event: "Test: Event/GreatName"
           }
           expect(Transformer.transform(message)).to eq({
-            event_text: "Test:Event/GreatName",
+            event_text: "Test: Event/GreatName",
             event: "test_event_great_name"
           }.stringify_keys)
         end

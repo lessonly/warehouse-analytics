@@ -53,6 +53,7 @@ module Warehouse
             .gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2')   # Insert _ between capital letter preceding lower case letter (ignores the start of the word)
             .gsub(/([a-z])([A-Z])/,'\1_\2')         # Insert _ between lower case letter preceding a capital letter
             .tr("- ", "_")                          # Convert hyphens - and spaces to underscore
+            .squeeze("_")                           # Remove any extra underscores next to each other __ to _
             .downcase                               # Convert all capital letters to lower case
         end
 
