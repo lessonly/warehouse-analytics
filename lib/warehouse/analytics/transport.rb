@@ -17,8 +17,10 @@ module Warehouse
         batch.each do |message|
           next unless message['event'] == 'on_demand_practice_learn_more_clicked'
           message.slice!(*Tracking::OnDemandPracticeLearnMoreClicked.column_names)
-          unless Tracking::OnDemandPracticeLearnMoreClicked.create(message).persisted?
-            logger.warn("Failed to insert warehouse event: #{message.inspect}")
+          record = Tracking::OnDemandPracticeLearnMoreClicked.new(message)
+          result = record.class.import([record])
+          if result.failed_instances.present?
+            logger.warn("Failed to insert warehouse event: #{result.failed_instances.first.errors.full_messages.join(',')}")
           end
         end
       end
