@@ -28,15 +28,15 @@ module Warehouse
         end
 
         def rename_properties(message)
-          message["event_text"] = message["event"] if message["event"].present?
-          message["event"] = snake_case(message["event"]) if message["event"].present?
-          message["id"] = message["messageId"] if message["messageId"].present?
+          message['event_text'] = message['event'] if message['event'].present?
+          message['event'] = snake_case(message['event']) if message['event'].present?
+          message['id'] = message.delete('message_id') if message['message_id'].present?
           message
         end
 
         def prefix_reserved_words(message)
-          message["event"] = prefix_redshift_reserved_words(message["event"]) if message["event"].present?
-          message.transform_keys {|key| prefix_redshift_reserved_words(key) }
+          message['event'] = prefix_redshift_reserved_words(message['event']) if message['event'].present?
+          message.transform_keys { |key| prefix_redshift_reserved_words(key) }
         end
 
         private
@@ -49,12 +49,12 @@ module Warehouse
           # Based on underscore from rails active support
           # https://github.com/wycats/rails-api/blob/4aa40d1381fac5bc69bae6bb8e24dfb421997b40/vendor/rails/activesupport/lib/active_support/inflector/methods.rb#L38
           word.to_s
-            .gsub(/::|:|\//, '_')                   # Convert all ::, :, / to _
-            .gsub(/([A-Z]+)([A-Z][a-z])/,'\1_\2')   # Insert _ between capital letter preceding lower case letter (ignores the start of the word)
-            .gsub(/([a-z])([A-Z])/,'\1_\2')         # Insert _ between lower case letter preceding a capital letter
-            .tr("- ", "_")                          # Convert hyphens - and spaces to underscore
-            .squeeze("_")                           # Remove any extra underscores next to each other __ to _
-            .downcase                               # Convert all capital letters to lower case
+              .gsub(/::|:|\//, '_')                   # Convert all ::, :, / to _
+              .gsub(/([A-Z]+)([A-Z][a-z])/, '\1_\2')  # Insert _ between capital letter preceding lower case letter (ignores the start of the word)
+              .gsub(/([a-z])([A-Z])/, '\1_\2')        # Insert _ between lower case letter preceding a capital letter
+              .tr('- ', '_')                          # Convert hyphens - and spaces to underscore
+              .squeeze('_')                           # Remove any extra underscores next to each other __ to _
+              .downcase                               # Convert all capital letters to lower case
         end
 
         def valid_value_type?(value)
@@ -64,7 +64,7 @@ module Warehouse
         def flatten_and_transform_hash(hash, top_level)
           hash.each_with_object({}) do |(k, v), h|
             if v.is_a? Hash
-              key_prefix = ((top_level && k == :context) || !top_level) ? "#{k}_" : ""
+              key_prefix = (top_level && k == :context) || !top_level ? "#{k}_" : ''
               flatten_and_transform_hash(v, false).map do |h_k, h_v|
                 h["#{key_prefix}#{snake_case(h_k)}".to_s] = h_v
               end
@@ -75,7 +75,7 @@ module Warehouse
             else
               logger.warn "Unexpected Data Type (#{v.class}) in flatten_and_transform_hash for key (#{k})"
             end
-           end
+          end
         end
       end
     end

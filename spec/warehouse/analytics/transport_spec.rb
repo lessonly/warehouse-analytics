@@ -32,7 +32,12 @@ module Warehouse
 
             expect(subject.logger).to receive(:debug)
             expect(subject.logger).not_to receive(:warn)
-            expect(Tracking::OnDemandPracticeLearnMoreClicked).to receive(:create).with({ 'event' => 'on_demand_practice_learn_more_clicked' }).and_return(double(persisted?: true))
+            expect(Tracking::OnDemandPracticeLearnMoreClicked).to receive(:new)
+              .with({ 'event' => 'on_demand_practice_learn_more_clicked' })
+              .and_call_original
+            expect(Tracking::OnDemandPracticeLearnMoreClicked).to receive(:import)
+              .with([an_instance_of(Tracking::OnDemandPracticeLearnMoreClicked)])
+              .and_return(double(failed_instances: []))
             subject.send(batch)
           end
 
@@ -40,7 +45,7 @@ module Warehouse
             batch = [{ 'event' => 'test_event' }]
 
             expect(subject.logger).to receive(:debug)
-            expect(Tracking::OnDemandPracticeLearnMoreClicked).to_not receive(:create)
+            expect(Tracking::OnDemandPracticeLearnMoreClicked).to_not receive(:new)
             subject.send(batch)
           end
         end

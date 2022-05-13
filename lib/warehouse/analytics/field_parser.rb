@@ -137,6 +137,7 @@ module Warehouse
           timestamp = fields[:timestamp] || Time.new
           message_id = fields[:message_id].to_s if fields[:message_id]
           context = fields[:context] || {}
+          iso8601_timestamp = datetime_in_iso8601(timestamp)
 
           check_user_id! fields
           check_timestamp! timestamp
@@ -146,12 +147,15 @@ module Warehouse
           parsed = {
             :context => context,
             :messageId => message_id,
-            :timestamp => datetime_in_iso8601(timestamp)
+            :timestamp => iso8601_timestamp,
+            :received_at => iso8601_timestamp,
+            :sent_at => iso8601_timestamp
           }
 
           parsed[:userId] = fields[:user_id] if fields[:user_id]
           parsed[:anonymousId] = fields[:anonymous_id] if fields[:anonymous_id]
           parsed[:integrations] = fields[:integrations] if fields[:integrations]
+          parsed[:original_timestamp] = fields[:original_timestamp] || iso8601_timestamp
 
           # Not in spec, retained for backward compatibility
           parsed[:options] = fields[:options] if fields[:options]
