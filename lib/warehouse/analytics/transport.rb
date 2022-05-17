@@ -18,12 +18,18 @@ module Warehouse
 
         batch.each do |message|
           event_name = message['event']
-          next unless event_name == 'on_demand_practice_learn_more_clicked'
-          message.slice!(*@event_models[event_name.to_sym].column_names)
-          record = @event_models[event_name.to_sym].new(message)
-          result = record.class.import([record])
-          if result.failed_instances.present?
-            logger.warn("Failed to insert warehouse event: #{result.failed_instances.first.errors.full_messages.join(',')}")
+          event_model = @event_models[event_name]
+
+          if event_model
+            message.slice!(*event_model.column_names)
+            record = event_model.new(message)
+            result = record.class.import([record])
+
+            if result.failed_instances.present?
+              logger.warn("Failed to insert warehouse event: #{result.failed_instances.first.errors.full_messages.join(',')}")
+            end
+          else
+            logger.warn("Receieved an event (#{event_name}) without a matching key in the event_models hash")
           end
         end
       end

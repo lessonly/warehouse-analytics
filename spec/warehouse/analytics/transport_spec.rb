@@ -14,7 +14,7 @@ module Warehouse
         let(:options) do
           {
             event_models: {
-              :on_demand_practice_learn_more_clicked => Tracking::Warehouse::OnDemandPracticeLearnMoreClicked
+              'on_demand_practice_learn_more_clicked' => Tracking::Warehouse::OnDemandPracticeLearnMoreClicked
             }
           }
         end
@@ -49,7 +49,7 @@ module Warehouse
             batch = [{ 'event' => 'test_event' }]
 
             expect(subject.logger).to receive(:debug)
-            expect(Tracking::Warehouse::OnDemandPracticeLearnMoreClicked).to_not receive(:new)
+            expect(subject.logger).to receive(:warn).with('Receieved an event (test_event) without a matching key in the event_models hash')
             described_class.new(options).send(batch)
           end
         end
