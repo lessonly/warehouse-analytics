@@ -16,7 +16,7 @@ module Warehouse
 
         batch.each do |message|
           next unless message['event'] == 'on_demand_practice_learn_more_clicked'
-          message.slice!(*Tracking::OnDemandPracticeLearnMoreClicked.column_names)
+          message.slice!(*Tracking::Warehouse::OnDemandPracticeLearnMoreClicked.column_names)
           record = Tracking::OnDemandPracticeLearnMoreClicked.new(message)
           result = record.class.import([record])
           if result.failed_instances.present?
