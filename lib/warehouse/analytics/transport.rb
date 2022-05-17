@@ -9,15 +9,18 @@ module Warehouse
       include Warehouse::Analytics::Utils
       include Warehouse::Analytics::Logging
 
-      def initialize(options = {}); end
+      def initialize(options = {})
+        @event_models = options[:event_models] || {}
+      end
 
       def send(batch)
         logger.debug("Sending request for #{batch.length} items")
 
         batch.each do |message|
-          next unless message['event'] == 'on_demand_practice_learn_more_clicked'
-          message.slice!(*Tracking::Warehouse::OnDemandPracticeLearnMoreClicked.column_names)
-          record = Tracking::OnDemandPracticeLearnMoreClicked.new(message)
+          event_name = message['event']
+          next unless event_name == 'on_demand_practice_learn_more_clicked'
+          message.slice!(*@event_models[event_name.to_sym].column_names)
+          record = @event_models[event_name.to_sym].new(message)
           result = record.class.import([record])
           if result.failed_instances.present?
             logger.warn("Failed to insert warehouse event: #{result.failed_instances.first.errors.full_messages.join(',')}")

@@ -108,11 +108,13 @@ class FakeBackoffPolicy
 end
 
 module Tracking
-  class OnDemandPracticeLearnMoreClicked
-    def initialize(_args); end
+  module Warehouse
+    class OnDemandPracticeLearnMoreClicked
+      def initialize(_args); end
 
-    def self.column_names
-      ['event']
+      def self.column_names
+        ['event']
+      end
     end
   end
 end
