@@ -9,11 +9,15 @@ module Warehouse
         allow(subject.logger).to receive(:debug)
       end
 
-      describe '#initialize' do
-      end
-
       describe '#send' do
         let(:batch) { [] }
+        let(:options) do
+          {
+            event_models: {
+              'On Demand Practice: Learn More Clicked' => Tracking::Warehouse::OnDemandPracticeLearnMoreClicked
+            }
+          }
+        end
 
         context 'with a stub' do
           before do
@@ -27,26 +31,32 @@ module Warehouse
         end
 
         context 'a real request' do
-          it 'successfully saves a record to the database for Tracking::OnDemandPracticeLearnMoreClicked events' do
-            batch = [{ 'event' => 'on_demand_practice_learn_more_clicked', 'not_a_column' => "I'm not a column!" }]
+          it 'successfully saves a record to the database for Tracking::Warehouse::OnDemandPracticeLearnMoreClicked events' do
+            batch = [
+              {
+                'event_text' => 'On Demand Practice: Learn More Clicked',
+                'event' => 'on_demand_practice_learn_more_clicked',
+                'not_a_column' => "I'm not a column!"
+              }
+            ]
 
             expect(subject.logger).to receive(:debug)
             expect(subject.logger).not_to receive(:warn)
-            expect(Tracking::OnDemandPracticeLearnMoreClicked).to receive(:new)
+            expect(Tracking::Warehouse::OnDemandPracticeLearnMoreClicked).to receive(:new)
               .with({ 'event' => 'on_demand_practice_learn_more_clicked' })
               .and_call_original
-            expect(Tracking::OnDemandPracticeLearnMoreClicked).to receive(:import)
-              .with([an_instance_of(Tracking::OnDemandPracticeLearnMoreClicked)])
+            expect(Tracking::Warehouse::OnDemandPracticeLearnMoreClicked).to receive(:import)
+              .with([an_instance_of(Tracking::Warehouse::OnDemandPracticeLearnMoreClicked)])
               .and_return(double(failed_instances: []))
-            subject.send(batch)
+            described_class.new(options).send(batch)
           end
 
           it 'does not save a record to the database for any other event' do
-            batch = [{ 'event' => 'test_event' }]
+            batch = [{ 'event_text' => 'Test Event', 'event' => 'test_event' }]
 
             expect(subject.logger).to receive(:debug)
-            expect(Tracking::OnDemandPracticeLearnMoreClicked).to_not receive(:new)
-            subject.send(batch)
+            expect(subject.logger).to receive(:warn).with('Receieved an event (Test Event) without a matching key in the event_models hash')
+            described_class.new(options).send(batch)
           end
         end
       end
