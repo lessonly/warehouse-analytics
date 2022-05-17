@@ -9,6 +9,8 @@ module Warehouse
       include Warehouse::Analytics::Utils
       include Warehouse::Analytics::Logging
 
+      IGNORED_COLUMNS = %w[uuid uuid_ts]
+
       def initialize(options = {})
         @event_models = options[:event_models] || {}
       end
@@ -21,9 +23,10 @@ module Warehouse
           event_model = @event_models[event_name]
 
           if event_model
-            message.slice!(*event_model.column_names)
+            column_names = event_model.column_names - IGNORED_COLUMNS
+            message.slice!(*column_names)
             record = event_model.new(message)
-            result = record.class.import([record])
+            result = record.class.import(column_names, [record], :validate => false)
 
             if result.failed_instances.present?
               logger.warn("Failed to insert warehouse event: #{result.failed_instances.first.errors.full_messages.join(',')}")
