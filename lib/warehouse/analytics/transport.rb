@@ -17,7 +17,7 @@ module Warehouse
         logger.debug("Sending request for #{batch.length} items")
 
         batch.each do |message|
-          event_name = message['event']
+          event_name = message['event_text']
           event_model = @event_models[event_name]
 
           if event_model

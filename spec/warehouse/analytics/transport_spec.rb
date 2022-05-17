@@ -14,7 +14,7 @@ module Warehouse
         let(:options) do
           {
             event_models: {
-              'on_demand_practice_learn_more_clicked' => Tracking::Warehouse::OnDemandPracticeLearnMoreClicked
+              'On Demand Practice: Learn More Clicked' => Tracking::Warehouse::OnDemandPracticeLearnMoreClicked
             }
           }
         end
@@ -32,7 +32,13 @@ module Warehouse
 
         context 'a real request' do
           it 'successfully saves a record to the database for Tracking::Warehouse::OnDemandPracticeLearnMoreClicked events' do
-            batch = [{ 'event' => 'on_demand_practice_learn_more_clicked', 'not_a_column' => "I'm not a column!" }]
+            batch = [
+              {
+                'event_text' => 'On Demand Practice: Learn More Clicked',
+                'event' => 'on_demand_practice_learn_more_clicked',
+                'not_a_column' => "I'm not a column!"
+              }
+            ]
 
             expect(subject.logger).to receive(:debug)
             expect(subject.logger).not_to receive(:warn)
@@ -46,10 +52,10 @@ module Warehouse
           end
 
           it 'does not save a record to the database for any other event' do
-            batch = [{ 'event' => 'test_event' }]
+            batch = [{ 'event_text' => 'Test Event', 'event' => 'test_event' }]
 
             expect(subject.logger).to receive(:debug)
-            expect(subject.logger).to receive(:warn).with('Receieved an event (test_event) without a matching key in the event_models hash')
+            expect(subject.logger).to receive(:warn).with('Receieved an event (Test Event) without a matching key in the event_models hash')
             described_class.new(options).send(batch)
           end
         end
