@@ -46,7 +46,11 @@ module Warehouse
               .with({ 'event' => 'on_demand_practice_learn_more_clicked' })
               .and_call_original
             expect(Tracking::Warehouse::OnDemandPracticeLearnMoreClicked).to receive(:import)
-              .with([an_instance_of(Tracking::Warehouse::OnDemandPracticeLearnMoreClicked)])
+              .with(
+                ['event'],
+                [an_instance_of(Tracking::Warehouse::OnDemandPracticeLearnMoreClicked)],
+                validate: false
+              )
               .and_return(double(failed_instances: []))
             described_class.new(options).send(batch)
           end
