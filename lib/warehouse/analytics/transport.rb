@@ -18,18 +18,20 @@ module Warehouse
       def send(batch)
         logger.debug("Sending request for #{batch.length} items")
 
-        batch.each do |message|
-          event_name = message['event_text']
+        batches_by_model = batch.group_by { |message| message['event_text'] }
+        batches_by_model.each do |event_name, messages|
           event_model = @event_models[event_name]
 
           if event_model
             column_names = event_model.column_names - IGNORED_COLUMNS
-            message.slice!(*column_names)
-            record = event_model.new(message)
-            result = record.class.import(column_names, [record], :validate => false)
 
+            records = messages.map do |message|
+              message.slice!(*column_names)
+              event_model.new(message)
+            end
+            result = event_model.import(column_names, records, :validate => false)
             if result.failed_instances.present?
-              logger.warn("Failed to insert warehouse event: #{result.failed_instances.first.errors.full_messages.join(',')}")
+              logger.warn("Failed to insert #{result.failed_instances.length} warehouse events with name '#{event_name}'")
             end
           else
             logger.warn("Receieved an event (#{event_name}) without a matching key in the event_models hash")
