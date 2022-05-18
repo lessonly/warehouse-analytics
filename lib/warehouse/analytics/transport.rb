@@ -39,6 +39,8 @@ module Warehouse
                 logger.warn("Failed to insert #{result.failed_instances.length} warehouse events with name '#{event_name}'")
                 metrics.increment("warehouse_analytics.transport.failures", result.failed_instances.length)
               end
+            else
+              logger.warn("Receieved an event (#{event_name}) without a matching key in the event_models hash")
             end
           end
         end
