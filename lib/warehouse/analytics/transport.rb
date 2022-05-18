@@ -34,7 +34,6 @@ module Warehouse
                 event_model.new(message)
               end
               result = event_model.import(column_names, records, :validate => false)
-              metrics.increment("warehouse_analytics.transport.inserts", result.num_inserts)
               if result.failed_instances.present?
                 logger.warn("Failed to insert #{result.failed_instances.length} warehouse events with name '#{event_name}'")
                 metrics.increment("warehouse_analytics.transport.failures", result.failed_instances.length)
