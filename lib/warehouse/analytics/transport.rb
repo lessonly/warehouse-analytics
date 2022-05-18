@@ -2,6 +2,7 @@ require 'warehouse/analytics/defaults'
 require 'warehouse/analytics/utils'
 require 'warehouse/analytics/logging'
 require 'warehouse/analytics/backoff_policy'
+require 'warehouse/analytics/null_metrics'
 
 module Warehouse
   class Analytics
@@ -11,30 +12,34 @@ module Warehouse
 
       IGNORED_COLUMNS = %w[uuid uuid_ts]
 
+      attr_reader :metrics
+
       def initialize(options = {})
         @event_models = options[:event_models] || {}
+        @metrics = options[:metrics] || NullMetrics.new
       end
 
       def send(batch)
-        logger.debug("Sending request for #{batch.length} items")
+        metrics.gauge("warehouse_analytics.batch.size", batch.length)
+        metrics.time("warehouse_analytics.transport.latency") do
+          batches_by_model = batch.group_by { |message| message['event_text'] }
+          batches_by_model.each do |event_name, messages|
+            event_model = @event_models[event_name]
 
-        batches_by_model = batch.group_by { |message| message['event_text'] }
-        batches_by_model.each do |event_name, messages|
-          event_model = @event_models[event_name]
+            if event_model
+              column_names = event_model.column_names - IGNORED_COLUMNS
 
-          if event_model
-            column_names = event_model.column_names - IGNORED_COLUMNS
-
-            records = messages.map do |message|
-              message.slice!(*column_names)
-              event_model.new(message)
+              records = messages.map do |message|
+                message.slice!(*column_names)
+                event_model.new(message)
+              end
+              result = event_model.import(column_names, records, :validate => false)
+              metrics.increment("warehouse_analytics.transport.inserts", result.num_inserts)
+              if result.failed_instances.present?
+                logger.warn("Failed to insert #{result.failed_instances.length} warehouse events with name '#{event_name}'")
+                metrics.increment("warehouse_analytics.transport.failures", result.failed_instances.length)
+              end
             end
-            result = event_model.import(column_names, records, :validate => false)
-            if result.failed_instances.present?
-              logger.warn("Failed to insert #{result.failed_instances.length} warehouse events with name '#{event_name}'")
-            end
-          else
-            logger.warn("Receieved an event (#{event_name}) without a matching key in the event_models hash")
           end
         end
       end

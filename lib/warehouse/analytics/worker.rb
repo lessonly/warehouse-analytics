@@ -2,6 +2,7 @@ require 'warehouse/analytics/defaults'
 require 'warehouse/analytics/message_batch'
 require 'warehouse/analytics/transport'
 require 'warehouse/analytics/utils'
+require 'warehouse/analytics/null_metrics'
 
 module Warehouse
   class Analytics
@@ -9,6 +10,8 @@ module Warehouse
       include Warehouse::Analytics::Utils
       include Warehouse::Analytics::Defaults
       include Warehouse::Analytics::Logging
+
+      attr_reader :metrics
 
       # public: Creates a new worker
       #
@@ -28,6 +31,7 @@ module Warehouse
         @batch = MessageBatch.new(batch_size)
         @lock = Mutex.new
         @transport = Transport.new(options)
+        @metrics = options[:metrics] || NullMetrics.new
       end
 
       # public: Continuously runs the loop to check for new events
@@ -39,7 +43,7 @@ module Warehouse
           @lock.synchronize do
             consume_message_from_queue! until @batch.full? || @queue.empty?
           end
-
+          metrics.gauge("warehouse_analytics.queue.size", @queue.length)
           @transport.send @batch
 
           @lock.synchronize { @batch.clear }
