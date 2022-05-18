@@ -23,6 +23,7 @@ module Warehouse
         metrics.gauge("warehouse_analytics.batch.size", batch.length)
         metrics.time("warehouse_analytics.transport.latency") do
           batches_by_model = batch.group_by { |message| message['event_text'] }
+          metrics.gauge("warehouse_analytics.batch.model_count", batches_by_model.length)
           batches_by_model.each do |event_name, messages|
             event_model = @event_models[event_name]
 
