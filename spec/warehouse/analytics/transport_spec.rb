@@ -40,7 +40,6 @@ module Warehouse
               }
             ]
 
-            expect(subject.logger).to receive(:debug)
             expect(subject.logger).not_to receive(:warn)
             expect(Tracking::Warehouse::OnDemandPracticeLearnMoreClicked).to receive(:new)
               .with({ 'event' => 'on_demand_practice_learn_more_clicked' })
@@ -58,7 +57,6 @@ module Warehouse
           it 'does not save a record to the database for any other event' do
             batch = [{ 'event_text' => 'Test Event', 'event' => 'test_event' }]
 
-            expect(subject.logger).to receive(:debug)
             expect(subject.logger).to receive(:warn).with('Receieved an event (Test Event) without a matching key in the event_models hash')
             described_class.new(options).send(batch)
           end
