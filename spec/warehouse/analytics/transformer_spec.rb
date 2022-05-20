@@ -44,13 +44,13 @@ module Warehouse
               nested_object_2: {
                 mild_depth: true
               },
-              shallow: "shallow"
+              shallow: nil
             }
           }
           expect(Transformer.transform(message)).to eq({
             nested_object_deeply_nested_object_deepest_nested_object_deepiest_nested_object_yes: "deepiest",
             nested_object_2_mild_depth: true,
-            shallow: "shallow"
+            shallow: nil
           }.stringify_keys)
         end
 
