@@ -24,8 +24,22 @@ module Warehouse
             allow(described_class).to receive(:stub) { true }
           end
 
-          it 'does not receieve a debug statement on error' do
+          it 'does not receive a debug statement on error' do
             expect(subject.logger).not_to receive(:warn)
+            subject.send(batch)
+          end
+
+          it 'does not import batch' do
+            batch = [
+              {
+                'event_text' => 'On Demand Practice: Learn More Clicked',
+                'event' => 'on_demand_practice_learn_more_clicked',
+                'not_a_column' => "I'm not a column!"
+              }
+            ]
+            expect(subject.logger).to receive(:debug).with("stubbed request for batch = #{batch.inspect}")
+            expect(batch).not_to receive(:group_by)
+            expect(Tracking::Warehouse::OnDemandPracticeLearnMoreClicked).not_to receive(:new)
             subject.send(batch)
           end
         end
