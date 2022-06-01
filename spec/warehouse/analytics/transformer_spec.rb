@@ -159,6 +159,17 @@ module Warehouse
           expect(Transformer.transform(message)).to eq({})
         end
 
+        it 'truncates long strings to 512 characters' do
+          message = {
+            properties: {
+              string: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel euismod velit. Ut placerat urna sit amet euismod facilisis. Cras efficitur nisi suscipit, auctor ligula sed, dignissim augue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Vivamus laoreet nisi sit amet feugiat faucibus. Aliquam commodo tellus quam, a egestas metus sagittis nec. Suspendisse nec quam non nibh condimentum hendrerit quis non metus. Phasellus vitae mattis nisi. Maecenas et condimentum felis, quis fringilla velit. Fusce sagittis condimentum vulputate. Sed lectus tellus, feugiat ut ligula id, luctus consectetur purus. Duis quis libero id augue fringilla egestas ac at felis. Phasellus quis molestie libero. Integer et elementum ligula, et finibus leo. Donec vitae tellus nec massa commodo rutrum in eget est.'
+            }
+          }
+          expect(Transformer.transform(message)).to eq({
+            string: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vel euismod velit. Ut placerat urna sit amet euismod facilisis. Cras efficitur nisi suscipit, auctor ligula sed, dignissim augue. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Vivamus laoreet nisi sit amet feugiat faucibus. Aliquam commodo tellus quam, a egestas metus sagittis nec. Suspendisse nec quam non nibh condimentum hendrerit quis non metus. Phasellus vitae mattis nisi. Maecenas et condimentum fe...'
+          }.stringify_keys)
+        end
+
         it 'prefixes reserved event and keys' do
           message = {
             event: 'ALL',
