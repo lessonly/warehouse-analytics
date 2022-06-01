@@ -18,7 +18,7 @@ module Warehouse
       class << self
         include Warehouse::Analytics::Logging
 
-        VALID_VALUE_TYPES = [String, Numeric, TrueClass, FalseClass, NilClass, Time, DateTime, Array, Hash, Symbol]
+        VALID_VALUE_TYPES = [Numeric, TrueClass, FalseClass, NilClass, Time, DateTime, Array, Hash, Symbol]
 
         def transform(message)
           transformed_message = { **message }
@@ -70,6 +70,8 @@ module Warehouse
               end
             elsif v.is_a? Array
               h[snake_case(k)] = "[#{v.join(',')}]"
+            elsif v.is_a? String
+              h[snake_case(k)] = v.truncate(512)
             elsif valid_value_type?(v)
               h[snake_case(k)] = v
             else
