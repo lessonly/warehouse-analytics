@@ -18,7 +18,7 @@ module Warehouse
       class << self
         include Warehouse::Analytics::Logging
 
-        VALID_VALUE_TYPES = [Numeric, TrueClass, FalseClass, NilClass, Time, DateTime, Array, Hash, Symbol]
+        VALID_PASSTHROUGH_VALUE_TYPES = [Numeric, TrueClass, FalseClass, NilClass, Time, DateTime, Array, Hash, Symbol]
 
         def transform(message)
           transformed_message = { **message }
@@ -57,8 +57,8 @@ module Warehouse
               .downcase                               # Convert all capital letters to lower case
         end
 
-        def valid_value_type?(value)
-          VALID_VALUE_TYPES.find { |valid_class| value.is_a? valid_class }
+        def valid_passthrough_value_type?(value)
+          VALID_PASSTHROUGH_VALUE_TYPES.find { |valid_class| value.is_a? valid_class }
         end
 
         def flatten_and_transform_hash(hash, top_level)
@@ -72,7 +72,7 @@ module Warehouse
               h[snake_case(k)] = "[#{v.join(',')}]"
             elsif v.is_a? String
               h[snake_case(k)] = v.truncate(512)
-            elsif valid_value_type?(v)
+            elsif valid_passthrough_value_type?(v)
               h[snake_case(k)] = v
             else
               logger.warn "Unexpected Data Type (#{v.class}) in flatten_and_transform_hash for key (#{k})"
